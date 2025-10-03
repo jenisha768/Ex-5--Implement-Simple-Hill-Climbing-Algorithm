@@ -12,20 +12,12 @@ Feedback is provided in terms of heuristic function
 <h2>Algorithm:</h2>
 <p>
 <ol>
- <li> Evaluate the initial state.If it is a goal state then return it and quit. Otherwise, continue with initial state as current state.</li> 
-<li>Loop until a solution is found or there are no new operators left to be applied in current state:
-<ul><li>Select an operator that has not yet been applied to the current state and apply it to produce a new state</li>
-<li>Evaluate the new state:
-  <ul>
-<li>if it is a goal state, then return it and quit</li>
-<li>if it is not a goal state but better than current state then make new state as current state</li>
-<li>if it is not better than current state then continue in the loop</li>
-    </ul>
-</li>
-</ul>
-</li>
+ <li> Generate a random initial solution of the same length as the target.</li> 
+<li>Calculate the score as the ASCII difference between solution and target.</li>
+ <li>If the score is zero, stop (solution found).</li>
+ <li>Mutate the solution by changing one random character.</li>
+ <li>Accept the new solution if its score is better, otherwise repeat.</li>
 </ol>
-
 </p>
 <hr>
 <h3> Steps Applied:</h3>
@@ -40,46 +32,24 @@ Feedback is provided in terms of heuristic function
 
 ## PROGRAM
 ```python
-import random
-import string
-def generate_random_solution(answer):
-    l=len(answer)
-    return [random.choice(string.printable) for _ in range(l)]
-def evaluate(solution,answer):
-    print(solution)
-    target=list(answer)
-    diff=0
-    for i in range(len(target)):
-        s=solution[i]
-        t=target[i]
-        #to calculate the "difference" between two strings, character by character.
-        #ord(s) - ord(t) calculates the difference between the ASCII values of the characters s and t.
-         #abs() takes the absolute value of this difference to ensure that it is non-negative. This is important because the difference could be negative if s is less than t in terms of ASCII value.
-         #The absolute value ensures that the difference is always positive or zero.
-        diff += abs(ord(s) - ord(t))    return diff
-def mutate_solution(solution):
-    ind=random.randint(0,len(solution)-1)
-    solution[ind]=random.choice(string.printable)
-    return solution
-def SimpleHillClimbing():
-    answer="Artificial Intelligence"
-    best=generate_random_solution(answer)
-    best_score=evaluate(best,answer)
-    while True:
-       print("Score:", best_score, " Solution: ", "".join(best))  
-       if best_score == 0:
-           break
-       new_solution = mutate_solution(list(best))
-       score = evaluate(new_solution, answer)
-       if score < best_score:
-           best = new_solution
-           best_score = score
-SimpleHillClimbing()
+import random, string
+
+answer = "Artificial Intelligence"
+gen = lambda: [random.choice(string.printable) for _ in range(len(answer))]
+score = lambda s: sum(abs(ord(a)-ord(b)) for a,b in zip(s,answer))
+
+best = gen()
+while True:
+    print("Score:", score(best), "Solution:", "".join(best))
+    if score(best) == 0: break
+    new = best[:]; new[random.randrange(len(answer))] = random.choice(string.printable)
+    if score(new) < score(best): best = new
 ```
 
 <hr>
 <h2>Output:</h2>
-<img width="1353" height="743" alt="image" src="https://github.com/user-attachments/assets/41fcbeb3-32bb-49b4-a463-0aa1d753b096" />
-<img width="1202" height="744" alt="image" src="https://github.com/user-attachments/assets/eeb177e0-2db8-42df-aaf8-10a16b6d1169" />
+<img width="799" height="790" alt="image" src="https://github.com/user-attachments/assets/ce8b87fb-2289-4ecf-9357-1327b10e4597" />
+<img width="504" height="742" alt="image" src="https://github.com/user-attachments/assets/810f7480-f7c4-4dbd-bbd7-fc3c9412a9c0" />
+
 <h3>RESULT:</h3>
 <p>Thus the program to Implement Simple Hill Climbing Algorithm has been executed successfully. </p>
